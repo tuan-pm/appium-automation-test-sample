@@ -8,6 +8,7 @@ This project is a mobile automation framework using **Appium**, **Java**, and **
 - **Appium Server** (v2.5.3 recommended)
   - `npm install -g appium@2.5.3`
 - **Android SDK** & **Xcode** (for local runs)
+- **BrowserStack Account** (optional, for cloud testing)
 
 ## Driver Installation
 Before running tests locally, you must install the required Appium drivers:
@@ -23,10 +24,32 @@ appium driver install xcuitest@5.12.0
 ```
 
 ## Configuration
-Update [src/test/resources/config.properties](./src/test/resources/config.properties) to switch between local and BrowserStack runs:
+Update [src/test/resources/config.properties](./src/test/resources/config.properties):
 
-- **Local Run**: Set `run.mode=local`
-- **BrowserStack**: Set `run.mode=browserstack` and provide your `browserstack.user` and `browserstack.key`.
+```properties
+# Run mode: local or browserstack
+run.mode=local
+
+# BrowserStack Configuration
+browserstack.user=your_username
+browserstack.key=your_access_key
+browserstack.server=hub-cloud.browserstack.com
+browserstack.app_url_android=bs://app_hash_from_browserstack
+browserstack.app_url_ios=bs://app_hash_from_browserstack
+
+# Android Configuration
+android.device.name=Pixel_6_Pro_API_36
+android.os.version=16
+
+# iOS Configuration
+ios.device.name=iPhone SE (3rd generation)
+ios.os.version=17.4
+
+# Local Configuration
+local.appium_server=http://127.0.0.1:4723
+local.app_path_android=src/test/resources/sample.apk
+local.app_path_ios=src/test/resources/sample.app
+```
 
 ## Running Tests Locally
 
@@ -44,18 +67,50 @@ appium --address 127.0.0.1 --port 4723 --use-drivers uiautomator2,xcuitest
 - Ensure you have a simulator named matching `ios.device.name` in `config.properties`.
 
 ### 4. Execute Tests
-Run specific platform suites or both using Maven profiles:
-- **Android Suite**: `mvn test -Pandroid`
-- **iOS Suite**: `mvn test -Pios`
-- **Both Android and iOS**: `mvn test -Pall-tests`
+
+**Local Android Tests:**
+```bash
+mvn test -Pandroid
+```
+
+**Local iOS Tests:**
+```bash
+mvn test -Pios
+```
+
+**Both Local Android and iOS:**
+```bash
+mvn test -Pall-tests
+```
 
 ## Running on BrowserStack
-1. Set `run.mode=browserstack` in `config.properties`.
-2. Upload your `.apk` and `.ipa` files to BrowserStack and update `browserstack.app_url_android` and `browserstack.app_url_ios`.
-3. Execute the tests using the same Maven commands as above.
+
+### Setup
+1. Create a BrowserStack account at [https://www.browserstack.com](https://www.browserstack.com)
+2. Upload your app to BrowserStack:
+   - Android: Upload `.apk` file and note the `app_id`
+   - iOS: Upload `.ipa` file and note the `app_id`
+3. Update `config.properties` with:
+   - `run.mode=browserstack`
+   - `browserstack.user=your_username`
+   - `browserstack.key=your_access_key`
+   - `browserstack.app_id=bs://your_app_hash`
+
+### Execute Tests on BrowserStack
+
+**BrowserStack Android Tests:**
+```bash
+mvn test -PBandroid
+```
+
+**BrowserStack iOS Tests:**
+```bash
+mvn test -PBios
+```
 
 ## Troubleshooting
 - **NoSuchElementException**: If an element is not found, check if the locator needs adjustment for the current app version. Android locators should ideally use `accessibilityId`.
 - **SessionNotCreatedException (Android)**: Ensure `ANDROID_HOME` is set.
 - **SessionNotCreatedException (iOS)**: Ensure the `.ipa` or `.app.zip` is a valid archive and not corrupted.
 - **EACCES (NPM)**: Run `sudo chown -R $(whoami) ~/.npm` to fix local npm permissions.
+- **BrowserStack Connection Error**: Verify `browserstack.user` and `browserstack.key` in `config.properties`.

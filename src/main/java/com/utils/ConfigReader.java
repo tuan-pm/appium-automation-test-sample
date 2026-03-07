@@ -9,17 +9,23 @@ public class ConfigReader {
 
     static {
         try {
-            String configPath = System.getProperty("config", "config");
-            FileInputStream fis = new FileInputStream("src/test/resources/" + configPath + ".properties");
             properties = new Properties();
-            properties.load(fis);
+            String configFile = System.getProperty("config.file", "android.properties");
+            String configPath = "src/test/resources/config/" + configFile;
+            
+            FileInputStream fileInputStream = new FileInputStream(configPath);
+            properties.load(fileInputStream);
+            fileInputStream.close();
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Could not load config properties file");
+            throw new RuntimeException("Could not load config properties file: " + e.getMessage(), e);
         }
     }
 
     public static String getProperty(String key) {
         return properties.getProperty(key);
+    }
+
+    public static String getProperty(String key, String defaultValue) {
+        return properties.getProperty(key, defaultValue);
     }
 }

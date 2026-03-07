@@ -17,6 +17,8 @@
         <allure.version>2.24.0</allure.version>
         <allure-maven.version>2.12.0</allure-maven.version>
         <aspectj.version>1.9.20.1</aspectj.version>
+        <browserstack.config>browserstack-android.yml</browserstack.config>
+        <config.file>android.properties</config.file>
     </properties>
 
     <dependencies>
@@ -39,6 +41,11 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>2.0.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>2.15.2</version>
         </dependency>
     </dependencies>
 
@@ -66,23 +73,46 @@
                 <artifactId>allure-maven</artifactId>
                 <version>${allure-maven.version}</version>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <files>
+                                <file>src/test/resources/config/${config.file}</file>
+                            </files>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
     <profiles>
         <profile>
             <id>android</id>
+            <properties>
+                <config.file>android.properties</config.file>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
+                        <version>3.1.2</version>
                         <configuration>
                             <suiteXmlFiles>
-                                <suiteXmlFile>src/test/resources/android-test.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/suites/android-test.xml</suiteXmlFile>
                             </suiteXmlFiles>
                             <systemPropertyVariables>
                                 <config>android-config</config>
+                                <config.file>${config.file}</config.file>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
@@ -91,6 +121,9 @@
         </profile>
         <profile>
             <id>ios</id>
+            <properties>
+                <config.file>ios.properties</config.file>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -98,10 +131,58 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <suiteXmlFiles>
-                                <suiteXmlFile>src/test/resources/ios-test.xml</suiteXmlFile>
+                                <suiteXmlFile>src/test/resources/suites/ios-test.xml</suiteXmlFile>
                             </suiteXmlFiles>
                             <systemPropertyVariables>
                                 <config>ios-config</config>
+                                <config.file>${config.file}</config.file>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>Bandroid</id>
+            <properties>
+                <config.file>Bandroid.properties</config.file>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>src/test/resources/suites/android-test.xml</suiteXmlFile>
+                            </suiteXmlFiles>
+                            <systemPropertyVariables>
+                                <config.file>${config.file}</config.file>
+                                <browserstack.config>${browserstack.config}</browserstack.config>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>Bios</id>
+            <properties>
+                <browserstack.config>browserstack-ios.yml</browserstack.config>
+                <config.file>Bios.properties</config.file>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>src/test/resources/suites/ios-test.xml</suiteXmlFile>
+                            </suiteXmlFiles>
+                            <systemPropertyVariables>
+                                <config.file>${config.file}</config.file>
+                                <browserstack.config>${browserstack.config}</browserstack.config>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
