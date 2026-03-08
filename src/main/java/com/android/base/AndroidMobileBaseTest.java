@@ -6,7 +6,9 @@ import io.appium.java_client.android.options.UiAutomator2Options;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
 
+import com.utils.AllureReportUtil;
 import com.utils.ConfigReader;
 
 import java.io.File;
@@ -18,6 +20,11 @@ import java.util.Map;
 public class AndroidMobileBaseTest {
     protected AppiumDriver driver;
     private AppiumDriverLocalService service;
+
+    @BeforeSuite
+    public void beforeSuite() {
+        AllureReportUtil.generateEnvironmentProperties();
+    }
 
     @BeforeMethod
     public void setup() throws MalformedURLException {

@@ -1,9 +1,11 @@
 package com.poc.tests.api;
 
+import com.utils.AllureReportUtil;
 import com.utils.ConfigReader;
 import io.restassured.http.ContentType;
 import io.qameta.allure.restassured.AllureRestAssured;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
@@ -12,6 +14,11 @@ import static org.hamcrest.Matchers.*;
 public class CoinApiTest {
 
     private String coinsUrl;
+
+    @BeforeSuite
+    public void beforeSuite() {
+        AllureReportUtil.generateEnvironmentProperties();
+    }
 
     @BeforeClass
     public void setup() {

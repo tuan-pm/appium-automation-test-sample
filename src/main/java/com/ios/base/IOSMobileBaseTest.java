@@ -6,7 +6,9 @@ import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.options.XCUITestOptions;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
 
+import com.utils.AllureReportUtil;
 import com.utils.ConfigReader;
 
 import java.io.File;
@@ -16,6 +18,11 @@ import java.util.HashMap;
 
 public class IOSMobileBaseTest {
     protected AppiumDriver driver;
+
+    @BeforeSuite
+    public void beforeSuite() {
+        AllureReportUtil.generateEnvironmentProperties();
+    }
 
     @BeforeMethod
     public void setup() throws MalformedURLException {
