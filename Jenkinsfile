@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     parameters {
-        choice(name: 'PLATFORM', choices: ['ANDROID', 'IOS'], description: 'Select the mobile platform to test')
+        choice(name: 'PLATFORM', choices: ['ANDROID', 'IOS', 'API'], description: 'Select the platform to test')
     }
 
     tools{
@@ -37,6 +37,9 @@ pipeline {
                         withCredentials(bsCredentials) {
                             sh "mvn clean test -PBios -Dbrowserstack.user=${BS_USER} -Dbrowserstack.key=${BS_KEY}"
                         }
+                    } else if (params.PLATFORM == 'API') {
+                        echo "Running API Tests..."
+                        sh "mvn clean test -Papi"
                     }
                 }
             }
