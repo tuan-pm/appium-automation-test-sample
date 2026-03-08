@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    parameters {
+        choice(name: 'PLATFORM', choices: ['ANDROID', 'IOS'], description: 'Select the mobile platform to test')
+    }
+
     tools{
          maven 'maven'
      }
@@ -17,30 +21,43 @@ pipeline {
             }
         }
 
-        stage('Android BrowserStack Tests') {
+        stage('Run Tests') {
             steps {
-                withCredentials([string(credentialsId: 'browserstack-user', variable: 'BS_USER'),
-                                string(credentialsId: 'browserstack-key', variable: 'BS_KEY')]) {
-                    sh "mvn test -PBandroid -Dbrowserstack.user=${BS_USER} -Dbrowserstack.key=${BS_KEY}"
+                script {
+                    def bsCredentials = [string(credentialsId: 'browserstack-user', variable: 'BS_USER'),
+                                        string(credentialsId: 'browserstack-key', variable: 'BS_KEY')]
+                    
+                    if (params.PLATFORM == 'ANDROID') {
+                        echo "Running Android Tests..."
+                        withCredentials(bsCredentials) {
+                            sh "mvn clean test -PBandroid -Dbrowserstack.user=${BS_USER} -Dbrowserstack.key=${BS_KEY}"
+                        }
+                    } else if (params.PLATFORM == 'IOS') {
+                        echo "Running iOS Tests..."
+                        withCredentials(bsCredentials) {
+                            sh "mvn clean test -PBios -Dbrowserstack.user=${BS_USER} -Dbrowserstack.key=${BS_KEY}"
+                        }
+                    }
                 }
             }
         }
 
-        stage('iOS BrowserStack Tests') {
-            when {
-                expression { return params.RUN_IOS_TESTS == 'true' }
-            }
+        stage('Generate Allure Report') {
             steps {
-                withCredentials([string(credentialsId: 'browserstack-user', variable: 'BS_USER'),
-                                string(credentialsId: 'browserstack-key', variable: 'BS_KEY')]) {
-                    sh "mvn test -PBios -Dbrowserstack.user=${BS_USER} -Dbrowserstack.key=${BS_KEY}"
-                }
+                sh 'mvn allure:report'
             }
         }
     }
 
     post {
         always {
+            publishHTML([allowMissing: false, 
+                        alwaysLinkToLastBuild: true, 
+                        keepAll: true, 
+                        reportDir: 'target/site/allure-maven-plugin', 
+                        reportFiles: 'index.html', 
+                        reportName: 'Allure Report'])
+            
             archiveArtifacts artifacts: 'target/*.jar, log/**', allowEmptyArchive: true
         }
     }

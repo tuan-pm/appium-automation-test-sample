@@ -67,21 +67,53 @@ appium --address 127.0.0.1 --port 4723 --use-drivers uiautomator2,xcuitest
 - Ensure you have a simulator named matching `ios.device.name` in `config.properties`.
 
 ### 4. Execute Tests
+To ensure old test results are cleared, always use `clean` before `test`:
 
 **Local Android Tests:**
 ```bash
-mvn test -Pandroid
+mvn clean test -Pandroid
 ```
 
 **Local iOS Tests:**
 ```bash
-mvn test -Pios
+mvn clean test -Pios
 ```
 
 **Both Local Android and iOS:**
 ```bash
-mvn test -Pall-tests
+mvn clean test -Pall-tests
 ```
+
+## Allure Reporting
+
+### Generate Report Locally
+To generate and view the Allure report after running tests:
+```bash
+# Generate and open in a web browser
+mvn allure:serve
+
+# Or generate static HTML in target/site/allure-maven-plugin
+mvn allure:report
+```
+Note: Results are stored in `target/allure-results` and are automatically cleared by `mvn clean`.
+
+## Running on Jenkins
+
+### 1. Prerequisites
+- **Jenkins Plugins**:
+  - `HTML Publisher Plugin` (to view Allure reports)
+  - `Credentials Plugin`
+- **Global Tool Configuration**:
+  - Add a **Maven** installation named `maven`
+  - Add a **JDK** installation named `java-17` (if not in system PATH)
+
+### 2. Setup Credentials
+Go to **Manage Jenkins > Credentials** and add:
+- **ID**: `browserstack-user` (Secret text)
+- **ID**: `browserstack-key` (Secret text)
+
+### 3. Execution
+The project includes a `Jenkinsfile` that handles the build, BrowserStack execution, and Allure report generation.
 
 ## Running on BrowserStack
 
