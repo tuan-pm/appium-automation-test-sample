@@ -22,10 +22,18 @@ public class ConfigReader {
     }
 
     public static String getProperty(String key) {
+        String systemProperty = System.getProperty(key);
+        if (systemProperty != null) {
+            return systemProperty;
+        }
         return properties.getProperty(key);
     }
 
     public static String getProperty(String key, String defaultValue) {
+        String systemProperty = System.getProperty(key);
+        if (systemProperty != null) {
+            return systemProperty;
+        }
         return properties.getProperty(key, defaultValue);
     }
 }
