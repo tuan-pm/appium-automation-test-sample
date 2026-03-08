@@ -2,6 +2,7 @@ package com.poc.tests.api;
 
 import com.utils.ConfigReader;
 import io.restassured.http.ContentType;
+import io.qameta.allure.restassured.AllureRestAssured;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -22,6 +23,7 @@ public class CoinApiTest {
     @Test(description = "Verify that the coins endpoint returns 200 OK and is in JSON format")
     public void testGetCoinsStatusCodeAndContentType() {
         given()
+            .filter(new AllureRestAssured())
             .when()
                 .get(coinsUrl)
             .then()
@@ -32,6 +34,7 @@ public class CoinApiTest {
     @Test(description = "Verify that the coins list contains Bitcoin (btc-bitcoin)")
     public void testCoinsListContainsBitcoin() {
         given()
+            .filter(new AllureRestAssured())
             .when()
                 .get(coinsUrl)
             .then()

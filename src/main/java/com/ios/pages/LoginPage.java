@@ -2,6 +2,7 @@ package com.ios.pages;
 
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.AppiumDriver;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
 import java.time.Duration;
@@ -11,6 +12,7 @@ public class LoginPage extends BasePage {
         super(driver);
     }
 
+    @Step("Login as {username} with password {password}")
     public void login(String username, String password) {
         if (username != null) {
             driver.findElement(usernameInput).sendKeys(username);
@@ -21,10 +23,12 @@ public class LoginPage extends BasePage {
         driver.findElement(loginButton).click();
     }
 
+    @Step("Check if login page is displayed")
     public boolean isDisplayed() {
         return driver.findElement(usernameInput).isDisplayed();
     }
 
+    @Step("Get error message")
     public String errorMessage() {
         return driver.findElement(errorMessageLabel).getText();
     }

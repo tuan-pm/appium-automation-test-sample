@@ -2,6 +2,7 @@ package com.android.pages;
 
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.AppiumDriver;
+import io.qameta.allure.Step;
 
 import java.time.Duration;
 
@@ -15,6 +16,7 @@ public class CheckoutPage extends BasePage {
         super(driver);
     }
 
+    @Step("Checkout with first name {firstName}, last name {lastName} and postal code {postalCode}")
     public void checkoutWith(String firstName, String lastName, String postalCode){
             Wait.forDisplayed(driver, firstNameInput, Duration.ofSeconds(10));
             driver.findElement(firstNameInput).sendKeys(firstName);
@@ -25,6 +27,7 @@ public class CheckoutPage extends BasePage {
             Scroll.downToElement(driver,finishButton,10).click();
     }
 
+    @Step("Check if checkout is completed")
     public boolean isCheckoutCompleted(){
         Wait.forDisplayed(driver, backHomeButton, Duration.ofSeconds(10));
         return driver.findElement(backHomeButton).isDisplayed();

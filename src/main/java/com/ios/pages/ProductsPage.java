@@ -2,6 +2,7 @@ package com.ios.pages;
 
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.AppiumDriver;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
 import com.ios.common.navigation.Scroll;
@@ -14,16 +15,19 @@ public class ProductsPage extends BasePage {
         super(driver);
     }
 
+    @Step("Add {product} to cart")
     public void addToCart(String product) {
         Scroll.downToElement(driver, addToCartButton(product), 5).click();
     }
 
+    @Step("Go to cart")
     public CartPage goToCart() {
         Wait.forDisplayed(driver, cartIcon, Duration.ofSeconds(5));
         driver.findElement(cartIcon).click();
         return new CartPage(driver);
     }
 
+    @Step("Check if products page is displayed")
     public boolean isDisplayed() {
         Wait.forDisplayed(driver, sortingIcon, Duration.ofSeconds(5));
         return driver.findElement(sortingIcon).isDisplayed();

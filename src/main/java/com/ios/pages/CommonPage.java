@@ -2,6 +2,7 @@ package com.ios.pages;
 
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.AppiumDriver;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
 public class CommonPage extends BasePage {
@@ -9,6 +10,7 @@ public class CommonPage extends BasePage {
         super(driver);
     }
 
+    @Step("Logout from the application")
     public void logout() {
         driver.findElement(menuIcon).click();
         driver.findElement(logoutButton).click();
