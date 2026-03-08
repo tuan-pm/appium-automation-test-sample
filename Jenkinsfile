@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'maven' // Ensure 'maven' is configured in Global Tool Configuration
-        jdk 'java-17' // Ensure 'java-17' is configured in Global Tool Configuration
-    }
-
     environment {
         // Use Jenkins Credentials Plugin to store BROWSERSTACK_USER and BROWSERSTACK_KEY
         // These IDs must match the ones you create in Manage Jenkins > Credentials
