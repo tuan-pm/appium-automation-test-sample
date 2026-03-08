@@ -42,12 +42,6 @@ pipeline {
             }
         }
 
-        stage('Generate Allure Report') {
-            steps {
-                sh 'mvn allure:report'
-            }
-        }
-
         stage('reports') {
             steps {
                 script {
@@ -65,13 +59,6 @@ pipeline {
 
     post {
         always {
-            publishHTML([allowMissing: false, 
-                        alwaysLinkToLastBuild: true, 
-                        keepAll: true, 
-                        reportDir: 'target/site/allure-maven-plugin', 
-                        reportFiles: 'index.html', 
-                        reportName: 'Allure Report'])
-            
             archiveArtifacts artifacts: 'target/*.jar, log/**', allowEmptyArchive: true
         }
     }
